@@ -99,32 +99,30 @@ while True:
         if coyote[0]<-64:
             coyotes.pop(index)
         coyote[0]-=7
+    #6.3.1 - attack sunflowers
+        badrect=pygame.Rect(coyoteimg.get_rect())
+        badrect.top=coyote[1]
+        badrect.left=coyote[0]
+        if badrect.left<64:
+            healthvalue -= random.randint(5,20)
+            coyotes.pop(index)
+        index1 = 0
+        for perryhat in hats: #rect here store rectangular coordinates
+            hatrect = pygame.Rect(hat.get_rect())
+            hatrect.left=perryhat[1]
+            hatrect.top=perryhat[2]
+            if badrect.colliderect(hatrect):
+                acc[0]+=1
+                coyotes.pop(index) # pop() removes and returns last object or obj from the list
+                hats.pop(index1)
+                index1 += 1
+    #6.3.3 - next coyote
         index+=1
     for coyote in coyotes:
         screen.blit(coyoteimg, coyote)
 
-    # 6.3.1 - Attack sunflowers
-    badrect=pygame.Rect(coyoteimg.get_rect())
-    badrect.top=coyote[1]
-    badrect.left=coyote[0]
-    if badrect.left<64:
-        healthvalue -= random.randint(5,20)
-        coyotes.pop(index)
- 
-    #6.3.2 - check for collisions
-    index1 = 0
-    for perryhat in hats: #rect here store rectangular coordinates
-        hatrect = pygame.Rect(hat.get_rect())
-        hatrect.left=perryhat[1]
-        hatrect.top=perryhat[2]
-        if badrect.colliderect(hatrect):
-            acc[0]+=1
-            coyotes.pop(index) # pop() removes and returns last object or obj from the list
-            hats.pop(index1)
-        index1 += 1
 
     #6.3.3 - placing next bed guy into screen
-        index += 1
         for coyote in coyotes:
             screen.blit(coyoteimg, coyote)
                 
