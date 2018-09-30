@@ -12,7 +12,7 @@ width, height = 640, 480
 screen = pygame.display.set_mode((width, height))
 
 keys = [False, False, False, False, False]
-playerpos = [150, 100]
+playerpos = [250, 200]
 
 acc=[0,0]
 hats=[]
@@ -34,9 +34,11 @@ current_path = os.path.dirname(r'''C:\Users\jilli\AppData\Local\Programs\Python\
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
 image_path = os.path.join(resource_path, 'images') # The image folder path
 
+
+
 player = pygame.image.load(os.path.join(image_path, 'perry.png'))
 
-grass = pygame.image.load(os.path.join(image_path, 'grass.png'))
+background = pygame.image.load(os.path.join(image_path, 'background.png'))
 
 sunflower = pygame.image.load(os.path.join(image_path, 'sunflower.png'))
 
@@ -45,21 +47,26 @@ hat = pygame.image.load(os.path.join(image_path, 'perryhat.png'))
 coyoteimg1 = pygame.image.load(os.path.join(image_path, 'coyote.png'))
 coyoteimg = coyoteimg1
 
-badguyimg1 = pygame.image.load(os.path.join(image_path,'badguy.png'))
-badguyimg=badguyimg1
+healthbar = pygame.image.load(os.path.join(image_path, 'healthbar.png'))
+health = pygame.image.load(os.path.join(image_path, 'health.png'))
 
-
+gameover=pygame.image.load(os.path.join(image_path, 'gameover.png'))
+youwin=pygame.image.load(os.path.join(image_path, 'youwin.png'))
 
 #4 - Loop through game so it doesn't halt
-while True:
-    badtimer = badtimer - 1
+# 4 - keep looping through
+running = 1
+exitcode = 0
+while running:
+    badtimer-=1
+
     #5 - clears the screen before drawing it again
     screen.fill(0)
     #6 - draw screen elements (draw backgorund before player so player is above background
-    for x in range(width//grass.get_width()+1): # range() can only work with integers, but dividing
+    for x in range(width//background.get_width()+1): # range() can only work with integers, but dividing
                                                         #with the / operator always results in a float value
-        for y in range(height//grass.get_height()+1):
-            screen.blit(grass,(x*100,y*100))
+        for y in range(height//background.get_height()+1):
+            screen.blit(background,(x*100,y*100))
     screen.blit(sunflower,(0,30))
     screen.blit(sunflower,(0,135))
     screen.blit(sunflower,(0,240))
@@ -122,10 +129,22 @@ while True:
         screen.blit(coyoteimg, coyote)
 
 
-    #6.3.3 - placing next bed guy into screen
+    #6.3.3 - placing next coyote into screen
         for coyote in coyotes:
             screen.blit(coyoteimg, coyote)
-                
+            
+    # 6.4 - Draw timer
+        font = pygame.font.Font(None, 22)
+        survivedtext = font.render(str((90000-pygame.time.get_ticks())/60000)+":"+str((90000-pygame.time.get_ticks())/1000%60).zfill(2), True, (0,0,0))
+        textRect = survivedtext.get_rect()
+        textRect.topright=[635,5]
+        screen.blit(survivedtext, textRect)
+        
+    #6.5 - Draw health bar (read up)
+    screen.blit(healthbar, (5,5))
+    for perryhealth in range(healthvalue):
+        screen.blit(health, (perryhealth+8, 8))
+
                 
     #7 - update the screen
     pygame.display.flip()            # Update the full display Surface to the screen
@@ -176,6 +195,87 @@ while True:
             playerpos[0] = playerpos[0] - 5
         elif keys[3]:
             playerpos[0] = playerpos[0] + 5
+
+        #10 - game over?
+        if pygame.time.get_ticks()>=90000:
+            running=0
+            exitcode=1
+        if healthvalue <= 0:
+            running=0
+            exitcode=0
+        if acc[1]!=0:
+            accuracy=acc[0]*1.0/acc[1]*100
+        else:
+            accuracy=0
+
+    #10 - Win/Lose check
+    if pygame.time.get_ticks()>=90000:
+        running=0
+        exitcode=1
+    if healthvalue<=0:
+        running=0
+        exitcode=0
+    if acc[1]!=0:
+        accuracy=acc[0]*1.0/acc[1]*100
+    else:
+        accuracy=0
+        
+# 11 - At the end of game       
+if exitcode==0:
+    pygame.font.init()
+    font = pygame.font.Font(None, 24)
+    text = font.render("Accuracy: "+str(accuracy)+"%", True, (255,0,0))
+    textRect = text.get_rect()
+    textRect.centerx = screen.get_rect().centerx
+    textRect.centery = screen.get_rect().centery+24
+    screen.blit(gameover, (0,0))
+    screen.blit(text, textRect)
+else:
+    pygame.font.init()
+    font = pygame.font.Font(None, 24)
+    text = font.render("Accuracy: "+str(accuracy)+"%", True, (0,255,0))
+    textRect = text.get_rect()
+    textRect.centerx = screen.get_rect().centerx
+    textRect.centery = screen.get_rect().centery+24
+    screen.blit(youwin, (0,0))
+    screen.blit(text, textRect)
+    
+while 1:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit(0)
+    pygame.display.flip()
+
+
+##if exitcode==0:
+##   initialize_game()
+##   text = font.render("Accuracy: "+str(accuracy)+"%", True, (255,0,0))
+##   produce_text_on_screen()
+##else:
+##   initialize_game()
+##   text = font.render("Accuracy: "+str(accuracy)+"%", True, (0,255,0))
+##   produce_text_on_screen()
+##
+##def initialize_game():
+##    pygame.font.init()
+##    font = pygame.font.Font(None, 24)
+##
+##def produce_text_on_screen():
+##   textRect = text.get_rect()
+##   textRect.centerx = screen.get_rect().centerx
+##   textRect.centery = screen.get_rect().centery+24
+##   screen.blit(gameover, (0,0))
+##   screen.blit(text, textRect)
+##
+##while 1:
+##    for event in pygame.event.get():
+##        if event.type == pygame.QUIT:
+##            pygame.quit()
+##            exit(0)
+##    pygame.display.flip()
+
+
             
             
             
