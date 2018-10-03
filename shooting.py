@@ -17,10 +17,10 @@ playerpos = [250, 200]
 acc=[0,0]
 hats=[]
 
-pygame.display.set_caption('THIS IS WAR!')
+pygame.display.set_caption('Shooting!')
 
 #2.1 - add the bad guys decrease the
-#badtimer every frame until it is zero and then you spawn a new badger
+#badtimer every frame until it is zero 
 
 badtimer=100
 badtimer1=0
@@ -137,7 +137,7 @@ while running:
         font = pygame.font.Font(None, 22)
         survivedtext = font.render(str((90000-pygame.time.get_ticks())/60000)+":"+str((90000-pygame.time.get_ticks())/1000%60).zfill(2), True, (0,0,0))
         textRect = survivedtext.get_rect()
-        textRect.topright=[635,5]
+        textRect.topright=[640,5]
         screen.blit(survivedtext, textRect)
         
     #6.5 - Draw health bar (read up)
@@ -158,6 +158,10 @@ while running:
     #8 - Keys!
 
         if event.type == pygame.KEYDOWN:
+            left = -10
+            right = 10
+            up = 10
+            down = -10
             if event.key==K_w:
                 keys[0]=True
             elif event.key==K_a:
@@ -188,13 +192,13 @@ while running:
 
         #9 - Move player
         if keys[0]:
-            playerpos[1]= playerpos[1] - 5
+            playerpos[1]= playerpos[1] - 10
         elif keys[1]:
-            playerpos[1]= playerpos[1] + 5
+            playerpos[1]= playerpos[1] + 10
         elif keys[2]:
-            playerpos[0] = playerpos[0] - 5
+            playerpos[0] = playerpos[0] - 10
         elif keys[3]:
-            playerpos[0] = playerpos[0] + 5
+            playerpos[0] = playerpos[0] + 10
 
         #10 - game over?
         if pygame.time.get_ticks()>=90000:
