@@ -211,31 +211,34 @@ while running:
         
 # 11 - At the end of game
 
-result = gameover if exitcode == 0 else youwin
-color = (255, 0, 0) if exitcode == 0 else (0, 255, 0)
-
 def initialize_game():
-   pygame.font.init()
-   font = pygame.font.Font(None, 24)
+    pygame.font.init()
+    font = pygame.font.Font(None, 24)
 
 def produce_text_on_screen():
-   textRect = text.get_rect()
-   textRect.centerx = screen.get_rect().centerx
-   textRect.centery = screen.get_rect().centery+24
-   screen.blit(result, (0,0))
-   screen.blit(text, textRect)
+    textRect = text.get_rect()
+    textRect.centerx = screen.get_rect().centerx
+    textRect.centery = screen.get_rect().centery+24
+    result = gameover if exitcode == 0 else youwin
+    screen.blit(result, (0,0))
+    screen.blit(text, textRect)
 
 if exitcode==0:
-   initialize_game()
-   text = font.render("Accuracy: "+str(accuracy)+"%", True, color)
-   produce_text_on_screen()
+    initialize_game()
+    text = font.render("Accuracy: "+str(accuracy)+"%", True, (255, 0, 0))
+    produce_text_on_screen()
 else:
-   initialize_game()
-   text = font.render("Accuracy: "+str(accuracy)+"%", True, color)
-   produce_text_on_screen()
+    initialize_game()
+    text = font.render("Accuracy: "+str(accuracy)+"%", True,  (0, 255, 0))
+    produce_text_on_screen()
    
 
-
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit(0)
+    pygame.display.flip()
 
 
 
