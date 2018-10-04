@@ -6,7 +6,7 @@ import math
 import random
 from pygame.locals import *
 
-#2 - Initialize game
+
 pygame.init()
 width, height = 640, 480
 screen = pygame.display.set_mode((width, height))
@@ -19,16 +19,11 @@ list_of_hats=[]
 
 pygame.display.set_caption('Perry Against the Coyotes')
 
-#2.1 - add the bad guys decrease the
-#countdown every frame until it is zero 
-
 countdown=100
 countdown1=0
 coyotes=[[640,100]]
 healthvalue=194
 
-
-#3 - load images
 
 current_path = os.path.dirname(r'''C:\Users\jilli\AppData\Local\Programs\Python\Python36\shooting.py''') # Where your .py file is located
 resource_path = os.path.join(current_path, 'resources') # The resource folder path
@@ -53,14 +48,14 @@ health = pygame.image.load(os.path.join(image_path, 'health.png'))
 gameover=pygame.image.load(os.path.join(image_path, 'gameover.png'))
 youwin=pygame.image.load(os.path.join(image_path, 'youwin.png'))
 
-#4 - Loop through game so it doesn't halt
-# 4 - keep looping through
+"""
+renders the game and characters
+"""
 running = 1
 exitcode = 0
 while running:
     countdown-=1
 
-    #5 - clears the screen before drawing it again
     screen.fill(0)
     #6 - draw screen elements (draw backgorund before player so player is above background
     for x in range(width//background.get_width()+1): # range() can only work with integers, but dividing
@@ -78,7 +73,6 @@ while running:
     playerpos1 = (playerpos[0]-playerrotates.get_rect().width/2, playerpos[1]-playerrotates.get_rect().height/2)
     screen.blit(playerrotates, playerpos1)
     
-     # 6.2 - Draw list_of_hats
     for perryhat in list_of_hats:
         index=0
         velx = math.cos(perryhat[0])*10 #10 is the speed of the arrow
@@ -93,7 +87,7 @@ while running:
             list_of_hats1 = pygame.transform.rotate(hat, 360-projectile[0]*57.29) # multiply radians by approximately 57.29 or 360/2π
             screen.blit(list_of_hats1, (projectile[1], projectile[2]))
 
-    #6.3 - Draw coyotes
+
     if countdown==0:
         coyotes.append([640, random.randint(50,430)])
         countdown=100-(countdown1*2)
@@ -106,11 +100,11 @@ while running:
         if coyote[0]<-64:
             coyotes.pop(index)
         coyote[0]-=7
-    #6.3.1 - attack sunflowers
-        badrect=pygame.Rect(coyoteimg.get_rect())
-        badrect.top=coyote[1]
-        badrect.left=coyote[0]
-        if badrect.left<64:
+    
+        coyoterect=pygame.Rect(coyoteimg.get_rect())
+        coyoterect.top=coyote[1]
+        coyoterect.left=coyote[0]
+        if coyoterect.left<64:
             healthvalue -= random.randint(5,20)
             coyotes.pop(index)
         index1 = 0
@@ -118,7 +112,7 @@ while running:
             hatrect = pygame.Rect(hat.get_rect())
             hatrect.left=perryhat[1]
             hatrect.top=perryhat[2]
-            if badrect.colliderect(hatrect):
+            if coyoterect.colliderect(hatrect):
                 acc[0]+=1
                 coyotes.pop(index) # pop() removes and returns last object or obj from the list
                 list_of_hats.pop(index1)
@@ -146,7 +140,6 @@ while running:
         screen.blit(health, (perryhealth+8, 8))
 
                 
-    #7 - update the screen
     pygame.display.flip()            # Update the full display Surface to the screen
     for event in pygame.event.get(): #event is for actions made by user
                                      #like pressing a key
@@ -154,8 +147,6 @@ while running:
             pygame.quit()
             sys.exit()
             pygame.display.update()
-            
-    #8 - Keys!
 
         if event.type == pygame.KEYDOWN:
             left = -10
@@ -190,7 +181,7 @@ while running:
                                      playerpos1[0]+32,
                                      playerpos1[1]+32])
 
-        #9 - Move player
+
         if keys[0]:
             playerpos[1]= playerpos[1] - 10
         elif keys[1]:
@@ -200,7 +191,6 @@ while running:
         elif keys[3]:
             playerpos[0] = playerpos[0] + 10
 
-        #10 - game over?
         if pygame.time.get_ticks()>=90000:
             running=0
             exitcode=1
@@ -213,9 +203,9 @@ while running:
             accuracy=0
 
         
-# 11 - At the end of game
 
-def initialize_font():
+
+def initialize_gameover_font():
     pygame.font.init()
     font = pygame.font.Font(None, 24)
 
@@ -228,11 +218,11 @@ def produce_text_on_screen():
     screen.blit(text, textRect)
 
 if exitcode==0:
-    initialize_font()
+    initialize_gameover_font()
     text = font.render("Accuracy: "+str(accuracy)+"%", True, (255, 0, 0))
     produce_text_on_screen()
 else:
-    initialize_font()
+    initialize_gameover_font()
     text = font.render("Accuracy: "+str(accuracy)+"%", True,  (0, 255, 0))
     produce_text_on_screen()
    
