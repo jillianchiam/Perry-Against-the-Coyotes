@@ -15,15 +15,15 @@ keys = [False, False, False, False, False]
 playerpos = [250, 200]
 
 acc=[0,0]
-hats=[]
+list_of_hats=[]
 
-pygame.display.set_caption('Shooting!')
+pygame.display.set_caption('Perry Against the Coyotes')
 
 #2.1 - add the bad guys decrease the
-#badtimer every frame until it is zero 
+#countdown every frame until it is zero 
 
-badtimer=100
-badtimer1=0
+countdown=100
+countdown1=0
 coyotes=[[640,100]]
 healthvalue=194
 
@@ -58,7 +58,7 @@ youwin=pygame.image.load(os.path.join(image_path, 'youwin.png'))
 running = 1
 exitcode = 0
 while running:
-    badtimer-=1
+    countdown-=1
 
     #5 - clears the screen before drawing it again
     screen.fill(0)
@@ -78,29 +78,29 @@ while running:
     playerpos1 = (playerpos[0]-playerrotates.get_rect().width/2, playerpos[1]-playerrotates.get_rect().height/2)
     screen.blit(playerrotates, playerpos1)
     
-     # 6.2 - Draw hats
-    for perryhat in hats:
+     # 6.2 - Draw list_of_hats
+    for perryhat in list_of_hats:
         index=0
         velx = math.cos(perryhat[0])*10 #10 is the speed of the arrow
         vely = math.sin(perryhat[0])*10
         perryhat[1] = perryhat[1] + velx
         perryhat[2] = perryhat[2] + vely
         if perryhat[1] < -64 or perryhat[2] > 640 or perryhat[2] < -64 or perryhat[2] > 480:
-            hats.pop(index) #If no index is specified, a.pop() removes and
+            list_of_hats.pop(index) #If no index is specified, a.pop() removes and
                      # returns the last item in the list.
         index = index + 1
-        for projectile in hats:
-            hats1 = pygame.transform.rotate(hat, 360-projectile[0]*57.29) # multiply radians by approximately 57.29 or 360/2π
-            screen.blit(hats1, (projectile[1], projectile[2]))
+        for projectile in list_of_hats:
+            list_of_hats1 = pygame.transform.rotate(hat, 360-projectile[0]*57.29) # multiply radians by approximately 57.29 or 360/2π
+            screen.blit(list_of_hats1, (projectile[1], projectile[2]))
 
     #6.3 - Draw coyotes
-    if badtimer==0:
+    if countdown==0:
         coyotes.append([640, random.randint(50,430)])
-        badtimer=100-(badtimer1*2)
-        if badtimer1>=35:
-            badtimer1=35
+        countdown=100-(countdown1*2)
+        if countdown1>=35:
+            countdown1=35
         else:
-            badtimer1+=5
+            countdown1+=5
     index=0
     for coyote in coyotes:
         if coyote[0]<-64:
@@ -114,14 +114,14 @@ while running:
             healthvalue -= random.randint(5,20)
             coyotes.pop(index)
         index1 = 0
-        for perryhat in hats: #rect here store rectangular coordinates
+        for perryhat in list_of_hats: #rect here store rectangular coordinates
             hatrect = pygame.Rect(hat.get_rect())
             hatrect.left=perryhat[1]
             hatrect.top=perryhat[2]
             if badrect.colliderect(hatrect):
                 acc[0]+=1
                 coyotes.pop(index) # pop() removes and returns last object or obj from the list
-                hats.pop(index1)
+                list_of_hats.pop(index1)
                 index1 += 1
     #6.3.3 - next coyote
         index+=1
@@ -133,7 +133,7 @@ while running:
         for coyote in coyotes:
             screen.blit(coyoteimg, coyote)
             
-    # 6.4 - Draw timer
+    # 6.4 - Draw countdown
         font = pygame.font.Font(None, 22)
         survivedtext = font.render(str((90000-pygame.time.get_ticks())/60000)+":"+str((90000-pygame.time.get_ticks())/1000%60).zfill(2), True, (0,0,0))
         textRect = survivedtext.get_rect()
@@ -162,30 +162,30 @@ while running:
             right = 10
             up = 10
             down = -10
-            if event.key==K_w:
+            if event.key==K_w or event.key == pygame.K_UP:
                 keys[0]=True
-            elif event.key==K_a:
+            elif event.key==K_s or event.key == pygame.K_LEFT:
                 keys[1]=True
-            elif event.key==K_s:
+            elif event.key==K_a or event.key == pygame.K_DOWN:
                 keys[2]=True
-            elif event.key==K_d:
+            elif event.key==K_d or event.key == pygame.K_RIGHT:
                 keys[3]=True
         if event.type == pygame.KEYUP:
-            if event.key==pygame.K_w:
+            if event.key==pygame.K_w or event.key == pygame.K_UP:
                 keys[0]=False
-            elif event.key==pygame.K_a:
+            elif event.key==K_a or event.key == pygame.K_LEFT:
                 keys[1]=False
-            elif event.key==pygame.K_s:
+            elif event.key==K_s or event.key == pygame.K_DOWN:
                 keys[2]=False
-            elif event.key==pygame.K_d:
+            elif event.key==pygame.K_d or event.key == pygame.K_RIGHT:
                 keys[3]=False
-
+            
 
 
         if event.type==pygame.MOUSEBUTTONDOWN:
             position=pygame.mouse.get_pos()
             acc[1]+=1
-            hats.append([math.atan2(position[1]-(playerpos1[1]+32),
+            list_of_hats.append([math.atan2(position[1]-(playerpos1[1]+32),
                                                 position[0]-(playerpos1[0]+26)),
                                      playerpos1[0]+32,
                                      playerpos1[1]+32])
@@ -215,7 +215,7 @@ while running:
         
 # 11 - At the end of game
 
-def initialize_game():
+def initialize_font():
     pygame.font.init()
     font = pygame.font.Font(None, 24)
 
@@ -228,11 +228,11 @@ def produce_text_on_screen():
     screen.blit(text, textRect)
 
 if exitcode==0:
-    initialize_game()
+    initialize_font()
     text = font.render("Accuracy: "+str(accuracy)+"%", True, (255, 0, 0))
     produce_text_on_screen()
 else:
-    initialize_game()
+    initialize_font()
     text = font.render("Accuracy: "+str(accuracy)+"%", True,  (0, 255, 0))
     produce_text_on_screen()
    
