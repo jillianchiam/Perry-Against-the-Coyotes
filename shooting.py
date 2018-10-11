@@ -25,9 +25,9 @@ coyotes=[[640,100]]
 healthvalue=194
 
 
-current_path = os.path.dirname(r'''C:\Users\jilli\AppData\Local\Programs\Python\Python36\shooting.py''') # Where your .py file is located
-resource_path = os.path.join(current_path, 'resources') # The resource folder path
-image_path = os.path.join(resource_path, 'images') # The image folder path
+current_path = os.path.dirname(r'''C:\Users\jilli\AppData\Local\Programs\Python\Python36\shooting.py''') 
+resource_path = os.path.join(current_path, 'resources') 
+image_path = os.path.join(resource_path, 'images')
 
 
 
@@ -57,7 +57,7 @@ while running:
     countdown-=1
 
     screen.fill(0)
-    #6 - draw screen elements (draw backgorund before player so player is above background
+    
     for x in range(width//background.get_width()+1): # range() can only work with integers, but dividing
                                                         #with the / operator always results in a float value
         for y in range(height//background.get_height()+1):
@@ -117,24 +117,21 @@ while running:
                 coyotes.pop(index) # pop() removes and returns last object or obj from the list
                 list_of_hats.pop(index1)
                 index1 += 1
-    #6.3.3 - next coyote
+    
         index+=1
     for coyote in coyotes:
         screen.blit(coyoteimg, coyote)
-
-
-    #6.3.3 - placing next coyote into screen
         for coyote in coyotes:
             screen.blit(coyoteimg, coyote)
             
-    # 6.4 - Draw countdown
+    
         font = pygame.font.Font(None, 22)
         survivedtext = font.render(str((90000-pygame.time.get_ticks())/60000)+":"+str((90000-pygame.time.get_ticks())/1000%60).zfill(2), True, (0,0,0))
         textRect = survivedtext.get_rect()
         textRect.topright=[640,5]
         screen.blit(survivedtext, textRect)
         
-    #6.5 - Draw health bar (read up)
+   
     screen.blit(healthbar, (5,5))
     for perryhealth in range(healthvalue):
         screen.blit(health, (perryhealth+8, 8))
